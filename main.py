@@ -44,11 +44,11 @@ firmware_vers = StringVar()
 ent5 = Entry(window, textvariable = title_text)
 ent5.grid(row=2, column=3)
 
-title_text = StringVar()
+calibration = StringVar()
 ent6 = Entry(window, textvariable = title_text)
 ent6.grid(row=3, column=1)
 
-title_text = StringVar()
+date = StringVar()
 ent7 = Entry(window, textvariable = title_text)
 ent7.grid(row=3, column=3)
 
