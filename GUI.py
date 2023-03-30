@@ -5,6 +5,8 @@ from turtle import update
 import tkinter.messagebox
 import database
 
+
+
 class GUI:
     def __init__(self, root, account):
         self.window = root
@@ -45,19 +47,19 @@ class GUI:
         self.type_of_search = StringVar()
         self.search = StringVar()
         
-        self.search_printer = Button(self.frame_right, text="Search", highlightthickness=0, bg="#fbfbfb",fg="#000000", command=self.search_data,bd=0).place(x=80, y=76, width=70, height=30)
+        self.search_printer = Button(self.frame_right, text="Search", highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=609, y=76, width=93, height=30)
         Button(self.frame_right, text="Show all", highlightthickness=0, bg="#fbfbfb", command=self.display_data,bd=0).place(x=80, y=110, width=70, height=20)
-        self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=270, y=76, width=411, height=30)
+        self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=80, y=76, width=491, height=30)
 
         self.search_choose = ttk.Combobox(self.frame_right, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.type_of_search)
         self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration')
         self.search_choose.current(0)
-        self.search_choose.place(x=159, y=76, width=100, height=30)
+        self.search_choose.place(x=500, y=76, width=100, height=30)
 
 
         # Middle Frame that contain input information of the 3D printer machine
         self.mid_frame = Frame(self.frame_right, bg="#e5e5e5")
-        self.mid_frame.place(x=80, y=138, width=599, height=303)
+        self.mid_frame.place(x=80, y=138, width=622, height=303)
 
         # Widget for the middle frame
         Label(self.frame_right, text="3D Printer Machine Management System", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
@@ -96,13 +98,13 @@ class GUI:
 
         # Bottom Frame that list information of 3D printer
         self.bottom_frame = Frame(self.frame_right, bg="#e5e5e5")
-        self.bottom_frame.place(x=80, y=400, width=599, height=301)
+        self.bottom_frame.place(x=80, y=400, width=622, height=301)
 
         # -------------------------------Treeview-------------------------------
         scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
         scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
 
-        columns = ('ID', 'name', 'manufacturer', 'model', 'serial number', 'firmware version', 'calibration')
+        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration')
         self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
                                            columns=columns,
                                            xscrollcommand=scroll_x.set,
@@ -115,8 +117,8 @@ class GUI:
         self.printer_list.heading('name', text='Name')
         self.printer_list.heading('manufacturer', text='Manufacturer')
         self.printer_list.heading('model', text='Model')
-        self.printer_list.heading('serial_num', text='Serial Number')
-        self.printer_list.heading('firmware_vers', text='Firmware Version')
+        self.printer_list.heading('serial_num', text='Serial')
+        self.printer_list.heading('firmware_vers', text='Firmware')
         self.printer_list.heading('calibration', text='Calibration')
 
 
@@ -177,7 +179,6 @@ class GUI:
         self.manufacturer_text.delete(0, END)
         self.model_text.delete(0, END)
         self.serial_num_text.delete(0, END)
-        self.calibration_text.delete(0, END)
 
         # Choose a value of a row
         choose_row = self.printer_list.focus()
@@ -223,7 +224,7 @@ class GUI:
 
         # Fill in empty into the entries
         self.printer_name_text.delete(0, END)
-        self.manufacturer_text.delete(0, END)
+        self.printmanufacturer_text.delete(0, END)
         self.model.delete(0, END)
         self.serial_num.delete(0, END)
         self.calibration.delete(0, END)
@@ -234,13 +235,12 @@ class GUI:
         else:
             answer = tkinter.messagebox.askyesno("Delete data", "Are you sure you want to permanently delete this?")
             if answer:
-                Database.delete(self.account, self.id)
+                database.delete(self.account, self.id)
                 self.display_data()
                 self.printer_name_text.delete(0, END)
                 self.manufacturer_text.delete(0, END)
-                self.serial_num_text.delete(0, END)
                 self.model_text.delete(0, END)
-                self.calibration.delete(0, END)
+                self.serial_num_text.delete(0, END)
                 tkinter.messagebox.showinfo("Delete", "You deleted the data")
             
     def delete_all_data(self):
