@@ -139,7 +139,7 @@ class GUI:
         self.choose_row()
 
     def save_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.calibration.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "":
             tkinter.messagebox.askokcancel(title='Error',
                                            message='Please enter valid data!')
         else:
@@ -159,7 +159,7 @@ class GUI:
                 self.manufacturer_text.delete(0, END)
                 self.model_text.delete(0, END)
                 self.serial_num_text.delete(0, END)
-                self.calibration_text.delete(0, END)
+                self.firmware_vers_text.delete(0, END)
 
             except Exception as es:
                 tkinter.messagebox.showerror(title='Error',
@@ -179,6 +179,7 @@ class GUI:
         self.manufacturer_text.delete(0, END)
         self.model_text.delete(0, END)
         self.serial_num_text.delete(0, END)
+        self.firmware_vers_text.delete(0, END)
 
         # Choose a value of a row
         choose_row = self.printer_list.focus()
@@ -200,7 +201,7 @@ class GUI:
         self.choose_row()
 
     def update_data(self):
-        if self.name.get() == "" or self.manufacture.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.calibration.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "":
             tkinter.messagebox.askretrycancel(title='Error', message='Please choose a data!')
         else:
             try:
@@ -224,10 +225,10 @@ class GUI:
 
         # Fill in empty into the entries
         self.printer_name_text.delete(0, END)
-        self.printmanufacturer_text.delete(0, END)
-        self.model.delete(0, END)
-        self.serial_num.delete(0, END)
-        self.calibration.delete(0, END)
+        self.manufacturer_text.delete(0, END)
+        self.model_text.delete(0, END)
+        self.serial_num_text.delete(0, END)
+        self.firmware_vers_text.delete(0, END)
         
     def delete_data(self):
         if not self.printer_list.selection():
@@ -241,6 +242,7 @@ class GUI:
                 self.manufacturer_text.delete(0, END)
                 self.model_text.delete(0, END)
                 self.serial_num_text.delete(0, END)
+                self.firmware_vers_text.delete(0, END)
                 tkinter.messagebox.showinfo("Delete", "You deleted the data")
             
     def delete_all_data(self):
@@ -254,7 +256,7 @@ class GUI:
             self.manufacturer_text.delete(0, END)
             self.model_text.delete(0, END)
             self.serial_num_text.delete(0, END)
-            self.calibration_text.delete(0, END)
+            self.firmware_vers_text.delete(0, END)
 
     def signout(self):
         self.window.destroy()

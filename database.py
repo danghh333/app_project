@@ -50,7 +50,7 @@ SET name = ?,
     manufacturer = ?,
     model = ?,
     serial_num = ?,
-    firmware_vers = ?
+    firmware_vers = ?,
     calibration = ?
 WHERE id = {id};""", (name, manufacturer, model, serial_num, firmware_vers, calibration))
     con.commit()
@@ -61,7 +61,7 @@ def delete(account, id):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"DELETE FROM printerFOR_{account} WHERE id = {id}")
-    cur = commit()
+    con.commit()
     con.close()
 
 def delete_all(account):
@@ -70,7 +70,7 @@ def delete_all(account):
     cur = con.cursor()
     cur.execute(f"DROP TABLE IF EXISTS printerFor_{account}")
     cur.execute(f"""
-CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY,
+CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
                                  name TEXT,
                                  manufacturer TEXT,
                                  model TEXT,
