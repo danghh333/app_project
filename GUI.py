@@ -62,7 +62,7 @@ class GUI:
         self.mid_frame.place(x=80, y=138, width=622, height=303)
 
         # Widget for the middle frame
-        Label(self.frame_right, text="3D Printer Machine Management System", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
+        Label(self.frame_right, text="Home", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
         self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5").place(x=15, y=15, width=121, height=21)
         self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5").place(x=15, y=55, width=121, height=21)
         self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5").place(x=15, y=95, width=121, height=21)
