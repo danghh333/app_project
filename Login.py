@@ -62,7 +62,7 @@ class Login:
         password_info = self.password.get()
 
         # Open file in write mode (\\ for Windows, / for Linux)
-        filepath = f'account/{username_info}.txt'
+        filepath = f'account\\{username_info}.txt'
         file = open(filepath, "w")
         # write username and password information into file
         file.write(username_info + "\n")
@@ -90,7 +90,7 @@ class Login:
 
         # Defining verification's conditions
         if f'{self.username1}.txt' in list_of_files:
-            filepath = f'account/{self.username1}.txt'
+            filepath = f'account\\{self.username1}.txt'
             file1 = open(filepath, "r")
             # read the file,
             # as splitlines() actually splits on the newline character,
