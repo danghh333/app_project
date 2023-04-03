@@ -25,6 +25,7 @@ class GUI:
         self.serial_num = StringVar()
         self.firmware_vers = StringVar()
         self.calibration =  StringVar()
+        self.usage_count = StringVar()
 
         self.frame_left = Frame(self.window, bg="#e5e5e5")
         self.frame_left.place(x=0, y=0, width=242, height=700, relwidth=1, relheight=1)
@@ -37,7 +38,8 @@ class GUI:
         self.save_printer = Button(self.frame_left, text="Add a new printer ", highlightthickness=0, bg="#fbfbfb", command=self.save_data,bd=0).place(x=33, y=76, width=175, height=36)
         self.update_printer = Button(self.frame_left, text="Update a printer", highlightthickness=0, bg="#fbfbfb", command=self.update_data,bd=0).place(x=33, y=146, width=175, height=36)
         self.delete_printer = Button(self.frame_left, text="Delete a printer", highlightthickness=0, bg="#fbfbfb", command=self.delete_data,bd=0).place(x=33, y=216, width=175, height=36)
-        self.reset_printer = Button(self.frame_left, text="Reset", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.delete_all_data, bd=0).place(x=33, y=286, width=175, height=36)
+        self.maint_check = Button(self.frame_left, text="Maintenance Checking", highlightthickness=0, bg="#fbfbfb", command=self,bd=0).place(x=33, y=286, width=175, height=36)
+        self.reset_printer = Button(self.frame_left, text="Reset", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.delete_all_data, bd=0).place(x=33, y=356, width=175, height=36)
         Button(self.frame_left, text="Sign out", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.signout, bd=0).place(x=33, y=665, width=175, height=36)
         
 
@@ -52,7 +54,7 @@ class GUI:
         self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=80, y=76, width=491, height=30)
 
         self.search_choose = ttk.Combobox(self.frame_right, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.type_of_search)
-        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration')
+        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', "Usage (times)")
         self.search_choose.current(0)
         self.search_choose.place(x=500, y=76, width=100, height=30)
 
@@ -62,14 +64,14 @@ class GUI:
         self.mid_frame.place(x=80, y=138, width=622, height=303)
 
         # Widget for the middle frame
-        Label(self.frame_right, text="Manage", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
+        Label(self.frame_right, text="Home", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
         self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5").place(x=15, y=15, width=121, height=21)
         self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5").place(x=15, y=55, width=121, height=21)
         self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5").place(x=15, y=95, width=121, height=21)
         self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5").place(x=15, y=135, width=121, height=21)
         self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5").place(x=15, y=175, width=121, height=21)
-        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5").place(x=15, y=225, width=121, height=21)
-
+        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5").place(x=15, y=215, width=121, height=21)
+        self.usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
         # Entry for the middle frame
         self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
         self.printer_name_text.place(x=159, y=15, width=400, height=21)
@@ -95,23 +97,38 @@ class GUI:
         self.calibration_choose.current()
         self.calibration_choose.place(x=159, y=215, width=400, height=25)
 
+        self.usage_count_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=255, width=400, height=21)
+        self.usage_count_choose = ttk.Combobox(self.mid_frame, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.usage_count)
+        self.usage_count_choose['values'] = ('0','1','2','3','4','5','6','7','8','9','10',
+                                        'More than 10')
+
+        self.usage_count_choose.current()
+        self.usage_count_choose.place(x=159, y=255, width=400, height=25)
+
+
 
         # Bottom Frame that list information of 3D printer
         self.bottom_frame = Frame(self.frame_right, bg="#e5e5e5")
-        self.bottom_frame.place(x=80, y=400, width=622, height=301)
+        self.bottom_frame.place(x=80, y=420, width=622, height=301)
 
         # -------------------------------Treeview-------------------------------
         scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
         scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
 
-        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration')
+        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration', "usage_count")
         self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
                                            columns=columns,
                                            xscrollcommand=scroll_x.set,
                                            yscrollcommand=scroll_y.set,)
+        
+
+        scroll_x.config(command = self.printer_list.xview)
+        scroll_y.config(command = self.printer_list.yview)
 
         scroll_x.pack(side=BOTTOM, fill=X)
         scroll_y.pack(side=RIGHT, fill=Y)
+
+        self.printer_list.pack(fill = BOTH, expand = 1)
 
         self.printer_list.heading('ID', text='ID')
         self.printer_list.heading('name', text='Name')
@@ -120,6 +137,7 @@ class GUI:
         self.printer_list.heading('serial_num', text='Serial')
         self.printer_list.heading('firmware_vers', text='Firmware')
         self.printer_list.heading('calibration', text='Calibration')
+        self.printer_list.heading('usage_count', text = "Usage (times)")
 
 
         self.printer_list['show'] = 'headings'
@@ -130,7 +148,7 @@ class GUI:
         self.printer_list.column('serial_num', width=40)
         self.printer_list.column('firmware_vers', width=20)
         self.printer_list.column('calibration', width=70)
-
+        self.printer_list.column('usage_count', width=60)
         self.printer_list.pack(fill=BOTH, expand=1)
 
         self.printer_list.bind('<ButtonRelease-1>', self.clicker)
@@ -139,7 +157,7 @@ class GUI:
         self.choose_row()
 
     def save_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get() == "":
             tkinter.messagebox.askokcancel(title='Error',
                                            message='Please enter valid data!')
         else:
@@ -150,7 +168,8 @@ class GUI:
                              self.model.get(),
                              self.serial_num.get(),
                              self.firmware_vers.get(),
-                             self.calibration.get())
+                             self.calibration.get(),
+                             self.usage_count.get())
                 self.display_data()
 
                 tkinter.messagebox.showinfo(title='Message',
@@ -193,6 +212,7 @@ class GUI:
             self.serial_num.set(self.data[4])
             self.firmware_vers.set(self.data[5])
             self.calibration.set(self.data[6])
+            self.usage_count.set(self.data[7])
         except:
             pass
 
@@ -201,7 +221,7 @@ class GUI:
         self.choose_row()
 
     def update_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get():
             tkinter.messagebox.askretrycancel(title='Error', message='Please choose a data!')
         else:
             try:
@@ -214,7 +234,8 @@ class GUI:
                                     self.model.get(),
                                     self.serial_num.get(), 
                                     self.firmware_vers.get(),
-                                    self.calibration.get())
+                                    self.calibration.get(),
+                                    self.usage_count.get())
 
                 else:
                     if not update:
@@ -276,4 +297,3 @@ class GUI:
                         self.printer_list.insert("", END, value=i)
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
-
