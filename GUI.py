@@ -1,6 +1,7 @@
 from cProfile import label
 from tkinter import *
 from tkinter import ttk
+from turtle import update
 import tkinter.messagebox
 import database
 
@@ -37,7 +38,7 @@ class GUI:
         self.save_printer = Button(self.frame_left, text="Add a new printer ", highlightthickness=0, bg="#fbfbfb", command=self.save_data,bd=0).place(x=33, y=76, width=175, height=36)
         self.update_printer = Button(self.frame_left, text="Update a printer", highlightthickness=0, bg="#fbfbfb", command=self.update_data,bd=0).place(x=33, y=146, width=175, height=36)
         self.delete_printer = Button(self.frame_left, text="Delete a printer", highlightthickness=0, bg="#fbfbfb", command=self.delete_data,bd=0).place(x=33, y=216, width=175, height=36)
-        self.maint_check = Button(self.frame_left, text="Maintenance Checking", highlightthickness=0, bg="#fbfbfb", command=self,bd=0).place(x=33, y=286, width=175, height=36)
+        self.maint_check = Button(self.frame_left, text="Maintenance Checking", highlightthickness=0, bg="#fbfbfb", command=self.check_maintenance,bd=0).place(x=33, y=286, width=175, height=36)
         self.reset_printer = Button(self.frame_left, text="Reset", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.delete_all_data, bd=0).place(x=33, y=356, width=175, height=36)
         Button(self.frame_left, text="Sign out", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.signout, bd=0).place(x=33, y=665, width=175, height=36)
         
@@ -53,7 +54,7 @@ class GUI:
         self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=80, y=76, width=491, height=30)
 
         self.search_choose = ttk.Combobox(self.frame_right, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.type_of_search)
-        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', 'Usage (times)')
+        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', "Usage (times)")
         self.search_choose.current(0)
         self.search_choose.place(x=500, y=76, width=100, height=30)
 
@@ -70,7 +71,7 @@ class GUI:
         self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5").place(x=15, y=135, width=121, height=21)
         self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5").place(x=15, y=175, width=121, height=21)
         self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5").place(x=15, y=215, width=121, height=21)
-        self.printer_usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
+        self.usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
         # Entry for the middle frame
         self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
         self.printer_name_text.place(x=159, y=15, width=400, height=21)
@@ -114,7 +115,7 @@ class GUI:
         scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
         scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
 
-        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration', "usage_count")
+        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration', "usage_count", 'maintenance')
         self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
                                            columns=columns,
                                            xscrollcommand=scroll_x.set,
@@ -136,10 +137,9 @@ class GUI:
         self.printer_list.heading('serial_num', text='Serial')
         self.printer_list.heading('firmware_vers', text='Firmware')
         self.printer_list.heading('calibration', text='Calibration')
-        self.printer_list.heading('usage_count', text = 'Usage (times)')
+        self.printer_list.heading('usage_count', text = "Usage (times)")
+        self.printer_list.heading('maintenance', text='Maintenance')
 
-
-        self.printer_list['show'] = 'headings'
         self.printer_list.column('ID', width=20)
         self.printer_list.column('name', width=70)
         self.printer_list.column('manufacturer', width=50)
@@ -148,7 +148,8 @@ class GUI:
         self.printer_list.column('firmware_vers', width=20)
         self.printer_list.column('calibration', width=70)
         self.printer_list.column('usage_count', width=60)
-        self.printer_list.pack(fill=BOTH, expand=1)
+        self.printer_list.column('maintenance', width = 70)
+        self.printer_list.config(show = "headings")
 
         self.printer_list.bind('<ButtonRelease-1>', self.clicker)
         self.display_data()
@@ -220,7 +221,7 @@ class GUI:
         self.choose_row()
 
     def update_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get():
             tkinter.messagebox.askretrycancel(title='Error', message='Please choose a data!')
         else:
             try:
@@ -264,9 +265,6 @@ class GUI:
                 self.serial_num_text.delete(0, END)
                 self.firmware_vers_text.delete(0, END)
                 tkinter.messagebox.showinfo("Delete", "You deleted the data")
-
-
-
             
     def delete_all_data(self):
         """A function to delete all data and drop table"""
@@ -299,3 +297,9 @@ class GUI:
                         self.printer_list.insert("", END, value=i)
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
+    def check_maintenance(self):
+        for printer in self.account.printers:
+            if printer.usage_count > 10:
+                self.treeview.set(printer.name, 'maintenance', 'Needs Maintenance')
+            else:
+                self.treeview.set(printer.name, 'maintenance', 'OK')
