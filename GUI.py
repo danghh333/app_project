@@ -1,7 +1,6 @@
 from cProfile import label
 from tkinter import *
 from tkinter import ttk
-from turtle import update
 import tkinter.messagebox
 import database
 
@@ -54,7 +53,7 @@ class GUI:
         self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=80, y=76, width=491, height=30)
 
         self.search_choose = ttk.Combobox(self.frame_right, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.type_of_search)
-        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', "Usage (times)")
+        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', 'Usage (times)')
         self.search_choose.current(0)
         self.search_choose.place(x=500, y=76, width=100, height=30)
 
@@ -71,7 +70,7 @@ class GUI:
         self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5").place(x=15, y=135, width=121, height=21)
         self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5").place(x=15, y=175, width=121, height=21)
         self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5").place(x=15, y=215, width=121, height=21)
-        self.usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
+        self.printer_usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
         # Entry for the middle frame
         self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
         self.printer_name_text.place(x=159, y=15, width=400, height=21)
@@ -137,7 +136,7 @@ class GUI:
         self.printer_list.heading('serial_num', text='Serial')
         self.printer_list.heading('firmware_vers', text='Firmware')
         self.printer_list.heading('calibration', text='Calibration')
-        self.printer_list.heading('usage_count', text = "Usage (times)")
+        self.printer_list.heading('usage_count', text = 'Usage (times)')
 
 
         self.printer_list['show'] = 'headings'
@@ -221,7 +220,7 @@ class GUI:
         self.choose_row()
 
     def update_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get():
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get() == "":
             tkinter.messagebox.askretrycancel(title='Error', message='Please choose a data!')
         else:
             try:
@@ -265,6 +264,9 @@ class GUI:
                 self.serial_num_text.delete(0, END)
                 self.firmware_vers_text.delete(0, END)
                 tkinter.messagebox.showinfo("Delete", "You deleted the data")
+
+
+
             
     def delete_all_data(self):
         """A function to delete all data and drop table"""
