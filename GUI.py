@@ -10,7 +10,7 @@ class GUI:
     def __init__(self, root, account):
         self.window = root
         self.window.title("3D Printer Machine Management Application")
-        self.window.geometry("1024x768")
+        self.window.geometry("1920x1080")
         self.window.grid()
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         
@@ -26,95 +26,103 @@ class GUI:
         self.calibration =  StringVar()
         self.usage_count = StringVar()
 
-        self.frame_left = Frame(self.window, bg="#e5e5e5")
-        self.frame_left.place(x=0, y=0, width=242, height=700, relwidth=1, relheight=1)
-
-        self.frame_right = Frame(self.window, bg="#f2f2f2")
-        self.frame_right.place(x=242, y=0, relwidth=1, relheight=1)
-
-
-        # Button in the left frame
-        self.save_printer = Button(self.frame_left, text="Add a new printer ", highlightthickness=0, bg="#fbfbfb", command=self.save_data,bd=0).place(x=33, y=76, width=175, height=36)
-        self.update_printer = Button(self.frame_left, text="Update a printer", highlightthickness=0, bg="#fbfbfb", command=self.update_data,bd=0).place(x=33, y=146, width=175, height=36)
-        self.delete_printer = Button(self.frame_left, text="Delete a printer", highlightthickness=0, bg="#fbfbfb", command=self.delete_data,bd=0).place(x=33, y=216, width=175, height=36)
-        self.maint_check = Button(self.frame_left, text="Maintenance Checking", highlightthickness=0, bg="#fbfbfb", command=self,bd=0).place(x=33, y=286, width=175, height=36)
-        self.reset_printer = Button(self.frame_left, text="Reset", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.delete_all_data, bd=0).place(x=33, y=356, width=175, height=36)
-        Button(self.frame_left, text="Sign out", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.signout, bd=0).place(x=33, y=665, width=175, height=36)
+        self.menu_frame = Frame(self.window, bg="#e5e5e5")
+        self.menu_frame.place(x=0, y=0, width=400, height=1080, relwidth=1, relheight=1)
         
 
-        # Button in the right frame
+        self.manage_frame = Frame(self.window, bg="#f2f2f2")
+        self.manage_frame.place(x=400, y=0, relwidth=1, relheight=1)
         
-        #This variable to choose what kind of search do you want to use
+        self.printing_frame = Frame(self.window, bg="#f2f2f2")
+        
+
+        self.maintain_frame = Frame(self.window, bg="#f2f2f2")
+        
+
+        
+        # Button and text in the menu frame
+        Label(self.menu_frame, text="Options", highlightthickness=0, bg="#e5e5e5", font=('Helvetica', 40,'bold')).place(x=50, y=100)
+        self.manage = Button(self.menu_frame, text="Manage", highlightthickness=0, bg="#e5e5e5", command=self.open_manage_frame, bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=250, width=400, height=75)
+        self.printing = Button(self.menu_frame, text="Printing", highlightthickness=0, bg="#e5e5e5", command=self.open_printing_frame,bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=325, width=400, height=75)
+        self.maintain = Button(self.menu_frame, text="Maintain", highlightthickness=0, bg="#e5e5e5", command=self.open_maintain_frame,bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=400, width=400, height=75)
+        Button(self.menu_frame, text="Quit", highlightthickness=0, fg="#fb5870", bg="#e5e5e5", command=self.on_closing, bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=900, width=400, height=75)
+        
+        
+        #Buttons & Widgets in the manage frame
         self.type_of_search = StringVar()
         self.search = StringVar()
         
-        self.search_printer = Button(self.frame_right, text="Search", highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=609, y=76, width=93, height=30)
-        Button(self.frame_right, text="Show all", highlightthickness=0, bg="#fbfbfb", command=self.display_data,bd=0).place(x=80, y=110, width=70, height=20)
-        self.search_printer_text = Entry(self.frame_right, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=80, y=76, width=491, height=30)
+        self.search_printer = Button(self.manage_frame, text="Search", font=('Helvetica', 12, 'bold'), highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=1250, y=150, width=125, height=30)
+        self.search_printer_text = Entry(self.manage_frame, font=('Helvetica', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=150, y=150, width=1000, height=30)
 
-        self.search_choose = ttk.Combobox(self.frame_right, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.type_of_search)
-        self.search_choose['values'] = ('Option', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration', 'Usage (times)')
+        
+        self.search_choose = ttk.Combobox(self.manage_frame, width=39, font=('Helvetica', 12), state='readonly', textvariable=self.type_of_search)
+        self.search_choose['values'] = ('Option', 'ID', 'Name', 'Manufacturer', 'Model', 'Serial Number', 'Calibration')
         self.search_choose.current(0)
-        self.search_choose.place(x=500, y=76, width=100, height=30)
+        self.search_choose.place(x=1150, y=150, width=100, height=30)
+
+       
 
 
         # Middle Frame that contain input information of the 3D printer machine
-        self.mid_frame = Frame(self.frame_right, bg="#e5e5e5")
-        self.mid_frame.place(x=80, y=138, width=622, height=303)
+        self.mid_frame = Frame(self.manage_frame, bg="#e5e5e5")
+        self.mid_frame.place(x=150, y=200, width=1225, height=303)
+
+        
 
         # Widget for the middle frame
-        Label(self.frame_right, text="Home", highlightthickness=0, bg="#f2f2f2", font=('Century Gothic', 20)).place(x=80, y=23)
-        self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5").place(x=15, y=15, width=121, height=21)
-        self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5").place(x=15, y=55, width=121, height=21)
-        self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5").place(x=15, y=95, width=121, height=21)
-        self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5").place(x=15, y=135, width=121, height=21)
-        self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5").place(x=15, y=175, width=121, height=21)
-        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5").place(x=15, y=215, width=121, height=21)
-        self.printer_usage_count = Label(self.mid_frame, text="Usage (times)", highlightthickness=0, bg="#e5e5e5").place(x=15, y=255, width=121, height=21)
+        Label(self.manage_frame, text="Manage", highlightthickness=0, bg="#f2f2f2", font=('Helvetica', 40,'bold')).place(x=150, y=80)
+        self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=15, width=120, height=30)
+        self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=55, width=120, height=30)
+        self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=95, width=120, height=30)
+        self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=135, width=120, height=30)
+        self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=175, width=120, height=30)
+        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=215, width=120, height=30)
+
+        #Function Button
+        self.save_printer = Button(self.mid_frame, text="Add a new printer ", highlightthickness=0, bg="#fbfbfb", command=self.save_data,bd=0).place(x=1000, y=15, width=175, height=30)
+        self.update_printer = Button(self.mid_frame, text="Update a printer", highlightthickness=0, bg="#fbfbfb", command=self.update_data,bd=0).place(x=1000, y=55, width=175, height=30)
+        self.delete_printer = Button(self.mid_frame, text="Delete a printer", highlightthickness=0, bg="#fbfbfb", command=self.delete_data,bd=0).place(x=1000, y=95, width=175, height=30)
+        Button(self.mid_frame, text="Show all", highlightthickness=0, bg="#fbfbfb", command=self.display_data,bd=0).place(x=1000, y=135, width=175, height=30)
+        self.reset_printer = Button(self.mid_frame, text="Reset", highlightthickness=0, fg="#ffffff", bg="#fb5870", command=self.delete_all_data, bd=0).place(x=1000, y=215, width=175, height=30)
+
+        
         # Entry for the middle frame
         self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
-        self.printer_name_text.place(x=159, y=15, width=400, height=21)
+        self.printer_name_text.place(x=159, y=15, width=800, height=30)
 
         self.manufacturer_text = Entry(self.mid_frame, font=('arial', 12, 'bold'),  width=404, justify=LEFT, textvariable=self.manufacturer)
-        self.manufacturer_text.place(x=159, y=55, width=400, height=21)
+        self.manufacturer_text.place(x=159, y=55, width=800, height=30)
 
         self.model_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.model)
-        self.model_text.place(x=159, y=95, width=400, height=21)
+        self.model_text.place(x=159, y=95, width=800, height=30)
 
         self.serial_num_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.serial_num)
-        self.serial_num_text.place(x=159, y=135, width=400, height=21)
+        self.serial_num_text.place(x=159, y=135, width=800, height=30)
 
         self.firmware_vers_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.firmware_vers)
-        self.firmware_vers_text.place(x=159, y=175, width=400, height=21)
+        self.firmware_vers_text.place(x=159, y=175, width=800, height=30)
 
 
-        self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=400, height=21)
+        self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=400, height=30)
         self.calibration_choose = ttk.Combobox(self.mid_frame, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.calibration)
         self.calibration_choose['values'] = ('Auto Bed Leveling',
                                         'Manual Bed Leveling')
 
         self.calibration_choose.current()
-        self.calibration_choose.place(x=159, y=215, width=400, height=25)
-
-        self.usage_count_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=255, width=400, height=21)
-        self.usage_count_choose = ttk.Combobox(self.mid_frame, width=39, font=('Century Gothic', 12), state='readonly', textvariable=self.usage_count)
-        self.usage_count_choose['values'] = ('0','1','2','3','4','5','6','7','8','9','10',
-                                        'More than 10')
-
-        self.usage_count_choose.current()
-        self.usage_count_choose.place(x=159, y=255, width=400, height=25)
+        self.calibration_choose.place(x=159, y=215, width=800, height=30)
 
 
 
         # Bottom Frame that list information of 3D printer
-        self.bottom_frame = Frame(self.frame_right, bg="#e5e5e5")
-        self.bottom_frame.place(x=80, y=420, width=622, height=301)
+        self.bottom_frame = Frame(self.manage_frame, bg="#e5e5e5")
+        self.bottom_frame.place(x=150, y=500, width=1225, height=475)
 
         # -------------------------------Treeview-------------------------------
         scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
         scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
 
-        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration', "usage_count")
+        columns = ('ID', 'name', 'manufacturer', 'model', 'serial_num', 'firmware_vers', 'calibration')
         self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
                                            columns=columns,
                                            xscrollcommand=scroll_x.set,
@@ -136,18 +144,196 @@ class GUI:
         self.printer_list.heading('serial_num', text='Serial')
         self.printer_list.heading('firmware_vers', text='Firmware')
         self.printer_list.heading('calibration', text='Calibration')
-        self.printer_list.heading('usage_count', text = 'Usage (times)')
 
 
         self.printer_list['show'] = 'headings'
-        self.printer_list.column('ID', width=20)
-        self.printer_list.column('name', width=70)
-        self.printer_list.column('manufacturer', width=50)
-        self.printer_list.column('model', width=30)
-        self.printer_list.column('serial_num', width=40)
+        self.printer_list.column('ID', width=1)
+        self.printer_list.column('name', width=100)
+        self.printer_list.column('manufacturer', width=100)
+        self.printer_list.column('model', width=40)
+        self.printer_list.column('serial_num', width=30)
         self.printer_list.column('firmware_vers', width=20)
-        self.printer_list.column('calibration', width=70)
-        self.printer_list.column('usage_count', width=60)
+        self.printer_list.column('calibration', width=100)
+        self.printer_list.pack(fill=BOTH, expand=1)
+
+        self.printer_list.bind('<ButtonRelease-1>', self.clicker)
+        self.display_data()
+
+        self.choose_row()
+
+
+        #Printing Frame
+        Label(self.printing_frame, text="Printing", highlightthickness=0, bg="#f2f2f2", font=('Helvetica', 40,'bold')).place(x=150, y=80)
+
+            # Search in printing
+        
+        self.search_printer = Button(self.printing_frame, text="Search", font=('Helvetica', 12, 'bold'), highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=1250, y=150, width=125, height=30)
+        self.search_printer_text = Entry(self.printing_frame, font=('Helvetica', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=150, y=150, width=1000, height=30)
+        self.search_choose = ttk.Combobox(self.printing_frame, width=39, font=('Helvetica', 12), state='readonly', textvariable=self.type_of_search)
+        self.search_choose['values'] = ('ID')
+        self.search_choose.current(0)
+        self.search_choose.place(x=1150, y=150, width=100, height=30)
+
+            #Mid frame in printing
+        self.mid_frame = Frame(self.printing_frame, bg="#e5e5e5")
+        self.mid_frame.place(x=150, y=200, width=1225, height=303)
+
+            # Widget for the middle frame in printing
+        
+        self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=15, width=120, height=30)
+        self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=55, width=120, height=30)
+        self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=95, width=120, height=30)
+        self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=135, width=120, height=30)
+        self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=175, width=120, height=30)
+        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=215, width=120, height=30)
+        
+
+            # Entry for the middle frame in printing
+        self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
+        self.printer_name_text.place(x=159, y=15, width=800, height=30)
+
+        self.manufacturer_text = Entry(self.mid_frame, font=('arial', 12, 'bold'),  width=404, justify=LEFT, textvariable=self.manufacturer)
+        self.manufacturer_text.place(x=159, y=55, width=800, height=30)
+
+        self.model_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.model)
+        self.model_text.place(x=159, y=95, width=800, height=30)
+
+        self.serial_num_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.serial_num)
+        self.serial_num_text.place(x=159, y=135, width=800, height=30)
+
+        self.firmware_vers_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.firmware_vers)
+        self.firmware_vers_text.place(x=159, y=175, width=800, height=30)
+
+
+        self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=800, height=30)
+
+            #Function Button in printing
+        self.print = Button(self.mid_frame, text="Add to print", highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=60)
+        self.stop_printing = Button(self.mid_frame, text="Stop", highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=95, width=175, height=60)
+
+            # Bottom Frame in printing
+        self.bottom_frame = Frame(self.printing_frame, bg="#e5e5e5")
+        self.bottom_frame.place(x=150, y=500, width=1225, height=475)
+
+            #Treeview in printing
+        scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
+        scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
+
+        columns = ('ID', 'printing_status', 'printing_time')
+        self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
+                                           columns=columns,
+                                           xscrollcommand=scroll_x.set,
+                                           yscrollcommand=scroll_y.set,)
+        
+
+        scroll_x.config(command = self.printer_list.xview)
+        scroll_y.config(command = self.printer_list.yview)
+
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
+
+        self.printer_list.pack(fill = BOTH, expand = 1)
+
+        self.printer_list.heading('ID', text='ID')
+        self.printer_list.heading('printing_status', text='Status')
+        self.printer_list.heading('printing_time', text='Printing Time')
+        
+
+
+        self.printer_list['show'] = 'headings'
+        self.printer_list.column('ID', width=1)
+        self.printer_list.column('printing_status', width=500)
+        self.printer_list.column('printing_time', width=500)
+        
+        self.printer_list.pack(fill=BOTH, expand=1)
+
+        self.printer_list.bind('<ButtonRelease-1>', self.clicker)
+        self.display_data()
+
+        self.choose_row()
+        
+
+        #Maintain Frame
+        Label(self.maintain_frame, text="Maintain", highlightthickness=0, bg="#f2f2f2", font=('Helvetica', 40,'bold')).place(x=150, y=80)
+            # Search in maintain
+        
+        self.search_printer = Button(self.maintain_frame, text="Search", font=('Helvetica', 12, 'bold'), highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=1250, y=150, width=125, height=30)
+        self.search_printer_text = Entry(self.maintain_frame, font=('Helvetica', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=150, y=150, width=1000, height=30)
+        self.search_choose = ttk.Combobox(self.maintain_frame, width=39, font=('Helvetica', 12), state='readonly', textvariable=self.type_of_search)
+        self.search_choose['values'] = ('ID')
+        self.search_choose.current(0)
+        self.search_choose.place(x=1150, y=150, width=100, height=30)
+
+            #Mid frame in maintain
+        self.mid_frame = Frame(self.maintain_frame, bg="#e5e5e5")
+        self.mid_frame.place(x=150, y=200, width=1225, height=303)
+
+            # Widget for the middle frame in maintain
+        
+        self.printer_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=15, width=120, height=30)
+        self.printer_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=55, width=120, height=30)
+        self.printer_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=95, width=120, height=30)
+        self.printer_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=135, width=120, height=30)
+        self.printer_firmware_vers = Label(self.mid_frame, text="Firmware Version", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=175, width=120, height=30)
+        self.printer_calibration = Label(self.mid_frame, text="Calibration", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=215, width=120, height=30)
+        
+
+            # Entry for the middle frame in maintain
+        self.printer_name_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.name)
+        self.printer_name_text.place(x=159, y=15, width=800, height=30)
+
+        self.manufacturer_text = Entry(self.mid_frame, font=('arial', 12, 'bold'),  width=404, justify=LEFT, textvariable=self.manufacturer)
+        self.manufacturer_text.place(x=159, y=55, width=800, height=30)
+
+        self.model_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.model)
+        self.model_text.place(x=159, y=95, width=800, height=30)
+
+        self.serial_num_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.serial_num)
+        self.serial_num_text.place(x=159, y=135, width=800, height=30)
+
+        self.firmware_vers_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT, textvariable=self.firmware_vers)
+        self.firmware_vers_text.place(x=159, y=175, width=800, height=30)
+
+
+        self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=800, height=30)
+
+            #Function Button in maintain
+        self.maintain = Button(self.mid_frame, text="Maintain & Repair", highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=60)
+        
+            # Bottom Frame in maintain
+        self.bottom_frame = Frame(self.maintain_frame, bg="#e5e5e5")
+        self.bottom_frame.place(x=150, y=500, width=1225, height=475)
+
+            #Treeview in maintain
+        scroll_x = Scrollbar(self.bottom_frame, orient=HORIZONTAL)
+        scroll_y = Scrollbar(self.bottom_frame, orient=VERTICAL)
+
+        columns = ('ID', 'maintain_status', 'last_maintenance')
+        self.printer_list = ttk.Treeview(self.bottom_frame, height=12,
+                                           columns=columns,
+                                           xscrollcommand=scroll_x.set,
+                                           yscrollcommand=scroll_y.set,)
+        
+
+        scroll_x.config(command = self.printer_list.xview)
+        scroll_y.config(command = self.printer_list.yview)
+
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
+
+        self.printer_list.pack(fill = BOTH, expand = 1)
+
+        self.printer_list.heading('ID', text='ID')
+        self.printer_list.heading('maintain_status', text='Status')
+        self.printer_list.heading('last_maintenance', text='Last Maintenance Date')
+        
+
+
+        self.printer_list['show'] = 'headings'
+        self.printer_list.column('ID', width=1)
+        self.printer_list.column('maintain_status', width=500)
+        self.printer_list.column('last_maintenance', width=500)
+        
         self.printer_list.pack(fill=BOTH, expand=1)
 
         self.printer_list.bind('<ButtonRelease-1>', self.clicker)
@@ -156,7 +342,7 @@ class GUI:
         self.choose_row()
 
     def save_data(self):
-        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "" or self.usage_count.get() == "":
+        if self.name.get() == "" or self.manufacturer.get() == "" or self.model.get() == "" or self.serial_num.get() == "" or self.firmware_vers.get() == "" or self.calibration.get() == "":
             tkinter.messagebox.askokcancel(title='Error',
                                            message='Please enter valid data!')
         else:
@@ -167,8 +353,8 @@ class GUI:
                              self.model.get(),
                              self.serial_num.get(),
                              self.firmware_vers.get(),
-                             self.calibration.get(),
-                             self.usage_count.get())
+                             self.calibration.get()
+                             )
                 self.display_data()
 
                 tkinter.messagebox.showinfo(title='Message',
@@ -211,7 +397,6 @@ class GUI:
             self.serial_num.set(self.data[4])
             self.firmware_vers.set(self.data[5])
             self.calibration.set(self.data[6])
-            self.usage_count.set(self.data[7])
         except:
             pass
 
@@ -264,6 +449,32 @@ class GUI:
                 self.serial_num_text.delete(0, END)
                 self.firmware_vers_text.delete(0, END)
                 tkinter.messagebox.showinfo("Delete", "You deleted the data")
+    
+    def open_manage_frame(self):
+        self.manage_frame.place(x=400, y=0, width=400, height=1080, relwidth=1, relheight=1)
+        self.mid_frame.place(x=150, y=200, width=1225, height=303)
+        self.bottom_frame.place(x=150, y=500, width=1225, height=475)
+        self.printing_frame.place_forget()
+        self.maintain_frame.place_forget()
+        
+
+    def open_printing_frame(self):
+        self.manage_frame.place_forget()
+        #self.mid_frame.place_forget()
+        #self.bottom_frame.place_forget()
+        self.maintain_frame.place_forget()
+        self.printing_frame.place(x=400, y=0, width=400, height=1080,relwidth=1, relheight=1)
+
+
+    def open_maintain_frame(self):
+        #self.manage_frame.place_forget()
+        #self.mid_frame.place_forget()
+        #self.bottom_frame.place_forget()
+        self.printing_frame.place_forget()
+        self.maintain_frame.place(x=400, y=0, width=400, height=1080,relwidth=1, relheight=1)
+    
+
+        
 
 
 
@@ -281,9 +492,6 @@ class GUI:
             self.serial_num_text.delete(0, END)
             self.firmware_vers_text.delete(0, END)
 
-    def signout(self):
-        self.window.destroy()
-
     def on_closing(self):
         quit()
 
@@ -299,3 +507,10 @@ class GUI:
                         self.printer_list.insert("", END, value=i)
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
+    
+
+
+window = Tk()
+obj = GUI(window, "dang")
+window.mainloop()
+           

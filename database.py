@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
                                   model TEXT,
                                   serial_num TEXT,
                                   firmware_vers TEXT,
-                                  calibration TEXT)""")
+                                  calibration TEXT
+                                  )""")
     cur.execute(f"""
 INSERT INTO printerFor_{account}(name, manufacturer, model, serial_num, firmware_vers, calibration)
 VALUES (?, ?, ?, ?, ?, ?);""", (str(name), str(manufacturer), str(model), str(serial_num), str(firmware_vers), str(calibration)))
@@ -41,6 +42,7 @@ def update(account, id, name, manufacturer, model, serial_num, firmware_vers, ca
         serial_num: serial number of a printer
         firmware_vers: firmware version of a printer
         calibration: calibration of a printer
+        
     """
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
@@ -99,6 +101,24 @@ def search(account, type_of_search, search):
     con.commit()
     con.close()
     return data
+
+def maint(account, usage_count):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    cur.execute(f"SELECT * FROM printerFOR_{account} WHERE 'usage_count' LIKE '%More than 10'")
+    data = cur.fetchall()
+    con.commit()
+    con.close()
+    return data
+
+def maint_done(account, id, usage_count):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    cur.execute(f"UPDATE printerFor_{account} SET 'usage_count' = '0' WHERE id = {id};")
+    con.commit()
+    con.close()
+
+
 
 
 
