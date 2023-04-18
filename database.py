@@ -118,22 +118,38 @@ def search(account, type_of_search, search):
     con.close()
     return data
 
-def start(account, id, name, printing_status):
+def print(account, id, name, printing_status):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"""
-CREATE TABLE IF NOT EXISTS printingFor_{account}(id INTEGER,
-                                 name TEXT,
-                                 printing_status TEXT,
-                                 )""")
-    cur.execute(f"""
-INSERT INTO printingFor_{account}(id INTEGER ,
-                                 name TEXT,
-                                 printing_status TEXT)
-VALUES (SELECT id ,'name' FROM printerFor_{account} WHERE printerFor_{account}.id = printingFor_{account}.id), 'printing...'""")
+UPDATE printerFor_{account}
+SET printing_status = "Printing..."
+WHERE id = {id}""")
     con.commit()
     con.close()
-###
+
+def stop_printing(account, id, name, printing_status):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    cur.execute(f"""
+UPDATE printerFor_{account}
+SET printing_status = "Stopped/Maintenance Needed!"
+WHERE id = {id}""")
+    con.commit()
+    con.close()
+
+def maintain(account, id, name, printing_status):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    cur.execute(f"""
+UPDATE printerFor_{account}
+SET printing_status = "Ready"
+WHERE id = {id}""")
+    con.commit()
+    con.close()
+
+
+
 
 
 

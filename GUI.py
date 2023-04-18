@@ -24,6 +24,7 @@ class GUI:
         self.serial_num = StringVar()
         self.firmware_vers = StringVar()
         self.calibration =  StringVar()
+        self.printing_status = StringVar()
 
         self.menu_frame = Frame(self.window, bg="#e5e5e5")
         self.menu_frame.place(x=0, y=0, width=400, height=1080, relwidth=1, relheight=1)
@@ -208,9 +209,9 @@ class GUI:
         self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=800, height=30)
 
             #Function Button in printing
-        self.print = Button(self.mid_frame, text="Print", highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=60)
-        self.stop_printing = Button(self.mid_frame, text="Stop", highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=95, width=175, height=60)
-        self.maintain = Button(self.mid_frame, text="Maintain & Repair", highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=200, width=175, height=45)
+        self.print = Button(self.mid_frame, text="Print", command=self.print, highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=60)
+        self.stop_printing = Button(self.mid_frame, text="Stop", command=self.stop_printing, highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=95, width=175, height=60)
+        self.maintain = Button(self.mid_frame, text="Maintain & Repair", command=self.maintain, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=200, width=175, height=45)
         
             #Bottom Frame in printing
         self.bottom_frame = Frame(self.printing_frame, bg="#e5e5e5")
@@ -316,7 +317,7 @@ class GUI:
         choose_row_printing = self.printing_list.focus()
         self.printing_data = self.printing_list.item(choose_row_printing, 'value')
         try:
-            self.id = self.data[0]
+            self.id = self.printing_data[0]
             self.name.set(self.printing_data[1])
             self.printing_status.set(self.printing_data[2])
         except:
@@ -445,6 +446,30 @@ class GUI:
                         self.printer_list.insert("", END, value=i)
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
+
+    def print(self):
+        printing_data = database.print(self.account, 
+                                       self.id, 
+                                       self.name, 
+                                       self.printing_status
+                                       )
+        self.display_printing_data()
+
+    def stop_printing(self):
+        printing_data = database.stop_printing(self.account, 
+                                       self.id, 
+                                       self.name, 
+                                       self.printing_status
+                                       )
+        self.display_printing_data()
+
+    def maintain(self):
+        printing_data = database.maintain(self.account, 
+                                       self.id, 
+                                       self.name, 
+                                       self.printing_status
+                                       )
+        self.display_printing_data()
     
 
 
