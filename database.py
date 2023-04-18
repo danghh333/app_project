@@ -16,9 +16,10 @@ CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
                                   )""")
     cur.execute(f"""
 INSERT INTO printerFor_{account}(name, manufacturer, model, serial_num, firmware_vers, calibration)
-VALUES (?, ?, ?, ?, ?, ?);""", (str(name), str(manufacturer), str(model), str(serial_num), str(firmware_vers), str(calibration)))
+VALUES (?, ?, ?, ?, ?, ?);""", (str(name), str(manufacturer), str(model), str(serial_num), str(firmware_vers), str(calibration)))       
     con.commit()
     con.close()
+
 
 def display(account):
     """Display all the data of the user"""
@@ -30,6 +31,19 @@ SELECT * FROM printerFor_{account}""")
     con.commit()
     con.close()
     return data
+
+def display_printing(account):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    cur.execute(f"""
+SELECT id, name FROM printerFor_{account}""")
+    printing_data = cur.fetchall()
+    con.commit()
+    con.close()
+    return printing_data
+
+
+
 
 def update(account, id, name, manufacturer, model, serial_num, firmware_vers, calibration):
     """To update information in database
@@ -102,21 +116,24 @@ def search(account, type_of_search, search):
     con.close()
     return data
 
-def maint(account, usage_count):
+def start(account, id, name, printing_status):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
-    cur.execute(f"SELECT * FROM printerFOR_{account} WHERE 'usage_count' LIKE '%More than 10'")
-    data = cur.fetchall()
+    cur.execute(f"""
+CREATE TABLE IF NOT EXISTS printingFor_{account}(id INTEGER,
+                                 name TEXT,
+                                 printing_status TEXT,
+                                 )""")
+    cur.execute(f"""
+INSERT INTO printingFor_{account}(id INTEGER ,
+                                 name TEXT,
+                                 printing_status TEXT)
+VALUES (SELECT id ,'name' FROM printerFor_{account} WHERE printerFor_{account}.id = printingFor_{account}.id), 'printing...'""")
     con.commit()
     con.close()
-    return data
+###
 
-def maint_done(account, id, usage_count):
-    con = sqlite3.connect('3d_printer_machine_management.db')
-    cur = con.cursor()
-    cur.execute(f"UPDATE printerFor_{account} SET 'usage_count' = '0' WHERE id = {id};")
-    con.commit()
-    con.close()
+
 
 
 
