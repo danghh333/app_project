@@ -42,6 +42,7 @@ class GUI:
         Label(self.menu_frame, text="Options", highlightthickness=0, bg="#e5e5e5", font=('Helvetica', 40,'bold')).place(x=50, y=100)
         self.manage = Button(self.menu_frame, text="Manage", highlightthickness=0, bg="#e5e5e5", command=self.open_manage_frame, bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=250, width=400, height=75)
         self.printing = Button(self.menu_frame, text="Printing", highlightthickness=0, bg="#e5e5e5", command=self.open_printing_frame,bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=325, width=400, height=75)
+        Button(self.menu_frame, text="Sign Out", highlightthickness=0, fg="#fb5870", bg="#e5e5e5", command=self.logout, bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=825, width=400, height=75)
         Button(self.menu_frame, text="Quit", highlightthickness=0, fg="#fb5870", bg="#e5e5e5", command=self.on_closing, bd=0, font=('Helvetica', 25,'bold')).place(x=0, y=900, width=400, height=75)
         
         
@@ -181,7 +182,7 @@ class GUI:
 
             # Widget for the middle frame in printing
         
-        self.printing_name = Label(self.mid_frame, text="3D printing Name", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=15, width=120, height=30)
+        self.printing_name = Label(self.mid_frame, text="3D Printer Name", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=15, width=120, height=30)
         self.printing_manufacturer = Label(self.mid_frame, text="Manufacturer", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=55, width=120, height=30)
         self.printing_model = Label(self.mid_frame, text="Model", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=95, width=120, height=30)
         self.printing_serial_num = Label(self.mid_frame, text="Serial Number", highlightthickness=0, bg="#e5e5e5", anchor = "w").place(x=15, y=135, width=120, height=30)
@@ -209,9 +210,10 @@ class GUI:
         self.calibration_text = Entry(self.mid_frame, font=('arial', 12, 'bold'), width=404, justify=LEFT).place(x=159, y=215, width=800, height=30)
 
             #Function Button in printing
-        self.print = Button(self.mid_frame, text="Print", command=self.print, highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=60)
-        self.stop_printing = Button(self.mid_frame, text="Stop", command=self.stop_printing, highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=95, width=175, height=60)
-        self.maintain = Button(self.mid_frame, text="Maintain & Repair", command=self.maintain, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=200, width=175, height=45)
+        self.print = Button(self.mid_frame, text="Print", command=self.print, highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=50)
+        self.stop_printing = Button(self.mid_frame, text="Stop", command=self.stop_printing, highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=75, width=175, height=50)
+        self.maintain = Button(self.mid_frame, text="Maintain & Repair", command=self.maintain, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=135, width=175, height=45)
+        self.maintain = Button(self.mid_frame, text="Show all", command=self.display_printing_data, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=213, width=175, height=30)
         
             #Bottom Frame in printing
         self.bottom_frame = Frame(self.printing_frame, bg="#e5e5e5")
@@ -396,6 +398,7 @@ class GUI:
             if answer:
                 database.delete(self.account, self.id)
                 self.display_data()
+                self.display_printing_data()
                 self.printer_name_text.delete(0, END)
                 self.manufacturer_text.delete(0, END)
                 self.model_text.delete(0, END)
@@ -444,36 +447,54 @@ class GUI:
                     self.printer_list.delete(*self.printer_list.get_children())
                     for i in data:
                         self.printer_list.insert("", END, value=i)
+                    self.printing_list.delete(*self.printing_list.get_children())
+                    for i in data:
+                        self.printing_list.insert("", END, value=i)
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
 
     def print(self):
-        printing_data = database.print(self.account, 
-                                       self.id, 
-                                       self.name, 
-                                       self.printing_status
-                                       )
-        self.display_printing_data()
+        if self.printing_status == "Ready":
+            answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to print?")
+            if answer:
+                printing_data = database.print(self.account, 
+                                                self.id, 
+                                                self.name, 
+                                                self.printing_status
+                                                )
+                self.display_printing_data()
+        else:
+            tkinter.messagebox.showwarning("Warning", "Selected printer is printing or need to maintain!")
+
 
     def stop_printing(self):
-        printing_data = database.stop_printing(self.account, 
-                                       self.id, 
-                                       self.name, 
-                                       self.printing_status
-                                       )
-        self.display_printing_data()
+        if self.printing_status != "Printing...":
+            answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to stop printing?")
+            if answer:
+                printing_data = database.stop_printing(self.account, 
+                                                        self.id, 
+                                                        self.name, 
+                                                        self.printing_status
+                                                        )
+                self.display_printing_data()
+        else:
+            tkinter.messagebox.showwarning("Warning", "Selected printer is not printing!")
 
     def maintain(self):
-        printing_data = database.maintain(self.account, 
-                                       self.id, 
-                                       self.name, 
-                                       self.printing_status
-                                       )
-        self.display_printing_data()
-    
+        if self.printing_status == "Stopped/Maintenance Needed!":
+            answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to maintain this printer?")
+            if answer:
+                printing_data = database.maintain(self.account, 
+                                                self.id, 
+                                                self.name, 
+                                                self.printing_status
+                                                )
+            self.display_printing_data()                                   
+        else:
+            tkinter.messagebox.showwarning("Warning", "Selected printer is currently running or in a good condition!")
 
-
+    def logout(self):
+        self.window.destroy()    
 window = Tk()
 obj = GUI(window, "dang")
 window.mainloop()
-           
