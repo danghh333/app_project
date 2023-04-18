@@ -467,7 +467,7 @@ class GUI:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
 
     def print(self):
-        if self.printing_status == "Ready":
+        if self.printing_data[2] == "Ready":
             answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to print?")
             if answer:
                 printing_data = database.print(self.account, 
@@ -475,13 +475,13 @@ class GUI:
                                                 self.name, 
                                                 self.printing_status
                                                 )
-                self.display_printing_data()
+            self.display_printing_data()
         else:
             tkinter.messagebox.showwarning("Warning", "Selected printer is printing or need to maintain!")
 
 
     def stop_printing(self):
-        if self.printing_status != "Printing...":
+        if self.printing_data[2] == "Printing...":
             answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to stop printing?")
             if answer:
                 printing_data = database.stop_printing(self.account, 
@@ -489,12 +489,12 @@ class GUI:
                                                         self.name, 
                                                         self.printing_status
                                                         )
-                self.display_printing_data()
+            self.display_printing_data()
         else:
             tkinter.messagebox.showwarning("Warning", "Selected printer is not printing!")
 
     def maintain(self):
-        if self.printing_status == "Stopped/Maintenance Needed!":
+        if self.printing_data[2] == "Stopped/Maintenance Needed!":
             answer = tkinter.messagebox.askokcancel("Confirmation", "Do you want to maintain this printer?")
             if answer:
                 printing_data = database.maintain(self.account, 
@@ -508,6 +508,6 @@ class GUI:
 
     def logout(self):
         self.window.destroy()    
-window = Tk()
-obj = GUI(window, "dang")
-window.mainloop()
+#window = Tk()
+#obj = GUI(window, "dang")
+#window.mainloop()
