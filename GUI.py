@@ -169,7 +169,7 @@ class GUI:
 
             # Search in printing
         
-        self.search_printer = Button(self.printing_frame, text="Search", font=('Helvetica', 12, 'bold'), highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_data,bd=0).place(x=1250, y=150, width=125, height=30)
+        self.search_printer = Button(self.printing_frame, text="Search", font=('Helvetica', 12, 'bold'), highlightthickness=0, bg="#33b249",fg="#ffffff", command=self.search_printing_data,bd=0).place(x=1250, y=150, width=125, height=30)
         self.search_printer_text = Entry(self.printing_frame, font=('Helvetica', 12, 'bold'), width=404, justify=LEFT, textvariable=self.search).place(x=150, y=150, width=1000, height=30)
         self.search_choose = ttk.Combobox(self.printing_frame, width=39, font=('Helvetica', 12), state='readonly', textvariable=self.type_of_search)
         self.search_choose['values'] = ('ID')
@@ -213,7 +213,7 @@ class GUI:
         self.print = Button(self.mid_frame, text="Print", command=self.print, highlightthickness=0, fg="#ffffff", bg="#33b249",bd=0).place(x=1000, y=15, width=175, height=50)
         self.stop_printing = Button(self.mid_frame, text="Stop", command=self.stop_printing, highlightthickness=0, fg="#ffffff", bg="#fb5870", bd=0).place(x=1000, y=75, width=175, height=50)
         self.maintain = Button(self.mid_frame, text="Maintain & Repair", command=self.maintain, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=135, width=175, height=45)
-        self.maintain = Button(self.mid_frame, text="Show all", command=self.display_printing_data, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=213, width=175, height=30)
+        Button(self.mid_frame, text="Show all", command=self.display_printing_data, highlightthickness=0, bg="#fbfbfb",bd=0).place(x=1000, y=213, width=175, height=30)
         
             #Bottom Frame in printing
         self.bottom_frame = Frame(self.printing_frame, bg="#e5e5e5")
@@ -436,6 +436,19 @@ class GUI:
 
     def on_closing(self):
         quit()
+
+    def search_printing_data(self):
+        if self.type_of_search == "Option" or self.search == "":
+            tkinter.messagebox.showwarning("Error", "Please choose the attribute!")
+        else:
+            try:
+                data = database.search_printing(self.account, self.type_of_search.get(), self.search.get())
+                if len(data) >= 0:
+                    self.printing_list.delete(*self.printing_list.get_children())
+                    for i in data:
+                        self.printing_list.insert("", END, value=i)
+            except:
+                tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
 
     def search_data(self):
         if self.type_of_search == "Option" or self.search == "":

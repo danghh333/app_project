@@ -118,6 +118,16 @@ def search(account, type_of_search, search):
     con.close()
     return data
 
+def search_printing(account, type_of_search, search):
+    con = sqlite3.connect('3d_printer_machine_management.db')
+    cur = con.cursor()
+    search_command = f"SELECT id, name, printing_status FROM printerFOR_{account} WHERE {type_of_search} LIKE '%{search}'"
+    cur.execute(search_command)
+    data = cur.fetchall()
+    con.commit()
+    con.close()
+    return data
+
 def print(account, id, name, printing_status):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
