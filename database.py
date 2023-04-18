@@ -12,11 +12,11 @@ CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
                                   model TEXT,
                                   serial_num TEXT,
                                   firmware_vers TEXT,
-                                  calibration TEXT
-                                  )""")
+                                  calibration TEXT,
+                                  printing_status TEXT)""")
     cur.execute(f"""
-INSERT INTO printerFor_{account}(name, manufacturer, model, serial_num, firmware_vers, calibration)
-VALUES (?, ?, ?, ?, ?, ?);""", (str(name), str(manufacturer), str(model), str(serial_num), str(firmware_vers), str(calibration)))       
+INSERT INTO printerFor_{account}(name, manufacturer, model, serial_num, firmware_vers, calibration, printing_status)
+VALUES (?, ?, ?, ?, ?, ?, "Ready");""", (str(name), str(manufacturer), str(model), str(serial_num), str(firmware_vers), str(calibration)))       
     con.commit()
     con.close()
 
@@ -26,7 +26,7 @@ def display(account):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"""
-SELECT * FROM printerFor_{account}""")
+SELECT id, name, manufacturer, model, serial_num, firmware_vers, calibration FROM printerFor_{account}""")
     data = cur.fetchall()
     con.commit()
     con.close()
@@ -36,7 +36,7 @@ def display_printing(account):
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"""
-SELECT id, name FROM printerFor_{account}""")
+SELECT id, name, printing_status FROM printerFor_{account}""")
     printing_data = cur.fetchall()
     con.commit()
     con.close()
@@ -92,7 +92,9 @@ CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
                                  model TEXT,
                                  serial_num TEXT,
                                  firmware_vers TEXT,
-                                 calibration TEXT)""")
+                                 calibration TEXT,
+                                 printing_status TEXT
+                                 )""")
     con.commit()
     con.close()
 

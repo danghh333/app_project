@@ -250,7 +250,7 @@ class GUI:
         
         self.printing_list.pack(fill=BOTH, expand=1)
 
-        self.printing_list.bind('<ButtonRelease-1>', self.clicker)
+        self.printing_list.bind('<ButtonRelease-1>', self.printing_clicker)
         self.display_printing_data()
 
         self.choose_row_printing()
@@ -274,6 +274,7 @@ class GUI:
                              )
                
                 self.display_data()
+                self.display_printing_data()
                 
 
                 tkinter.messagebox.showinfo(title='Message',
@@ -317,7 +318,7 @@ class GUI:
         try:
             self.id = self.data[0]
             self.name.set(self.printing_data[1])
-            self.status.set(self.printing_data[2])
+            self.printing_status.set(self.printing_data[2])
         except:
             pass
 
@@ -421,6 +422,7 @@ class GUI:
         if answer:
             database.delete_all(self.account)
             self.display_data()
+            self.display_printing_data()
             # Fill in empty into the entries
             self.printer_name_text.delete(0, END)
             self.manufacturer_text.delete(0, END)
