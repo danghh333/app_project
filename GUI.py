@@ -460,9 +460,7 @@ class GUI:
                     self.printer_list.delete(*self.printer_list.get_children())
                     for i in data:
                         self.printer_list.insert("", END, value=i)
-                    self.printing_list.delete(*self.printing_list.get_children())
-                    for i in data:
-                        self.printing_list.insert("", END, value=i)
+                    
             except:
                 tkinter.messagebox.showwarning("Warning", "Please choose the attribute!")
 

@@ -10,21 +10,19 @@ class Login:
         self.register_screen.geometry("640x480")
         self.register_screen.resizable(False,False)
 
-        # Set text variables
         self.username = StringVar()
         self.password = StringVar()
 
-        # Set label for user's instruction
         Label(self.register_screen, text="Please enter details below").pack()
         Label(self.register_screen, text="").pack()
 
-        # Set username label
+       
         username_lable = Label(self.register_screen, text="Username * ")
         username_lable.pack()
-        # Set username entry
+        # Username entry
         self.username_entry = Entry(self.register_screen, textvariable=self.username)
         self.username_entry.pack()
-        # Set password label
+        # Password label
         password_lable = Label(self.register_screen, text="Password * ")
         password_lable.pack()
         # Set password entry
@@ -77,8 +75,6 @@ class Login:
 
 
     def login_verify(self):
-        """Implementing event on login button """
-        # Get username and password
         self.username1 = self.username_verify.get()
         password1 = self.password_verify.get()
         # This will delete the entry after login button is pressed
@@ -88,13 +84,10 @@ class Login:
         # The method listdir() returns a list containing the names of the entries in the dir
         list_of_files = os.listdir('account')
 
-        # Defining verification's conditions
+        # Use / for Linux or Mac, \\ for Windows
         if f'{self.username1}.txt' in list_of_files:
             filepath = f'account/{self.username1}.txt'
             file1 = open(filepath, "r")
-            # read the file,
-            # as splitlines() actually splits on the newline character,
-            # the newline character is not left hanging at the end of each line. if password1 in veri
             verify = file1.read().splitlines()
             if password1 in verify:
                 self.login_sucess()
@@ -127,7 +120,6 @@ class Login:
         Label(self.user_not_found_screen, text="User Not Found").pack()
         Button(self.user_not_found_screen, text="OK", command=self.delete_user_not_found_screen).pack()
 
-    # Deleting popups
     def delete_login_success(self):
         self.login_success_screen.destroy()
 
@@ -144,21 +136,21 @@ class Login:
         quit()
 
     def main_account_screen(self):
-        """Designing Main(first) window"""
         self.main_screen = Tk()
         self.main_screen.geometry("640x480")
         self.main_screen.title("Account Login")
         self.main_screen.resizable(False,False)
-        # create a Form label
-        Label(text="3D Printer Machine Management System", width="300", height="2", font=("Calibri", 13)).pack()
+        # Create a Form label
+        
+        Label(text="3D Printer Machine Management System", width="300", height="2", font=('Helvetica', 20,'bold')).pack()
         Label(text="").pack()
-        # create Login Button 
-        Button(text="Login", height="2", width="30", command=self.login).pack()
-        Label(text="").pack()
-        # create a register button
+        # Create Log In Button 
+        Button(text="Log In", height="2", width="30", command=self.login).pack()
+        Label(text="").place(x=50, y =100)
+        # Create a register button
         Button(text="Register", height="2", width="30", command=self.register).pack()
         
-        Button(text="Quit", height="2", width="30", command=self.exit_program).pack()
+        Button(text="Quit", height="2", width="30", fg="#ffffff", bg="#fb5870", command=self.exit_program).pack()
         
         self.main_screen.protocol("WM_DELETE_WINDOW", self.on_closing)
 

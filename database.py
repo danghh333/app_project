@@ -2,7 +2,6 @@ import sqlite3
 
 
 def add(account, name, manufacturer, model, serial_num, firmware_vers, calibration):
-    """Add all the information of the 3D printer"""
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"""
@@ -46,8 +45,7 @@ SELECT id, name, printing_status FROM printerFor_{account}""")
 
 
 def update(account, id, name, manufacturer, model, serial_num, firmware_vers, calibration):
-    """To update information in database
-
+    """
     Args:
         id: id of the printer
         account: account of the users
@@ -73,7 +71,6 @@ WHERE id = {id};""", (name, manufacturer, model, serial_num, firmware_vers, cali
     con.close()
 
 def delete(account, id):
-    """Delete specific data based on the id of printer"""
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"DELETE FROM printerFOR_{account} WHERE id = {id}")
@@ -81,7 +78,6 @@ def delete(account, id):
     con.close()
 
 def delete_all(account):
-    """Delete all the data"""
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     cur.execute(f"DROP TABLE IF EXISTS printerFor_{account}")
@@ -99,16 +95,6 @@ CREATE TABLE IF NOT EXISTS printerFor_{account}(id INTEGER PRIMARY KEY,
     con.close()
 
 def search(account, type_of_search, search):
-    """
-    Args:
-        account (_type_): account of the user
-        type_of_search (_type_): choose the attribute you want to search
-        search (_type_): search the content of that attribute
-    
-    Returns:
-        data: return the data you want to search
-    """
-
     con = sqlite3.connect('3d_printer_machine_management.db')
     cur = con.cursor()
     search_command = f"SELECT * FROM printerFOR_{account} WHERE {type_of_search} LIKE '%{search}'"
